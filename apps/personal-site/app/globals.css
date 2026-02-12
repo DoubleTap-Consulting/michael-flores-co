@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light;
+  --bg: #f3f4ef;
+  --surface: #ffffff;
+  --text: #111217;
+  --muted: #4a4d5a;
+  --accent: #2359ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top right, #fff 0%, var(--bg) 45%);
+  color: var(--text);
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 5rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.hero {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 14px 40px rgba(17, 18, 23, 0.08);
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0.4rem 0 0.8rem;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.04;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+p,
+li {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 14px 40px rgba(17, 18, 23, 0.06);
+}
+
+ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}

@@ -1,0 +1,20 @@
+{
+  "name": "michael-flores-co",
+  "private": true,
+  "packageManager": "pnpm@9.15.3",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "dev:site": "pnpm --filter personal-site dev",
+    "dev:workflow": "pnpm --filter agentic-workflow dev"
+  },
+  "devDependencies": {
+    "turbo": "2.8.7",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,73 @@
+:root {
+  color-scheme: dark;
+  --bg: #06080f;
+  --surface: #0d1220;
+  --text: #ecedf3;
+  --muted: #acb1c0;
+  --accent: #6de0ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top left, #121e3a 0%, var(--bg) 55%);
+  color: var(--text);
+}
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 5rem;
+  display: grid;
+  gap: 1.2rem;
+}
+
+.hero {
+  background: linear-gradient(165deg, #0d1220 0%, #121a30 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(109, 224, 255, 0.18);
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0.4rem 0 0.8rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.06;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+p,
+li {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(109, 224, 255, 0.14);
+}
+
+ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
