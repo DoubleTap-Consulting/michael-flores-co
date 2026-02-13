@@ -38,25 +38,37 @@ function SocialIcon({ name }: { name: SocialIconName }) {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <rect
+          className="teaser__logoStroke"
           x="3.5"
           y="3.5"
           width="17"
           height="17"
           rx="3"
+          pathLength={100}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
         />
-        <circle cx="8.2" cy="9" r="1" fill="currentColor" />
+        <circle
+          className="teaser__logoDot"
+          cx="8.2"
+          cy="9"
+          r="1"
+          fill="currentColor"
+        />
         <path
+          className="teaser__logoStroke"
           d="M7.2 11.2V17"
+          pathLength={100}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
           strokeLinecap="round"
         />
         <path
+          className="teaser__logoStroke"
           d="M11.2 17v-3.2c0-1.3 0.9-2.2 2.1-2.2s2.1 0.9 2.1 2.2V17"
+          pathLength={100}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
@@ -71,15 +83,19 @@ function SocialIcon({ name }: { name: SocialIconName }) {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle
+          className="teaser__logoStroke"
           cx="12"
           cy="12"
           r="8.5"
+          pathLength={100}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
         />
         <path
+          className="teaser__logoStroke"
           d="M15.8 13c0 2.2-1.5 3.9-3.8 3.9-2.3 0-3.9-1.7-3.9-4.3 0-2.6 1.8-4.6 4.5-4.6 2.3 0 3.9 1.3 4.2 3.3"
+          pathLength={100}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
@@ -87,7 +103,9 @@ function SocialIcon({ name }: { name: SocialIconName }) {
           strokeLinejoin="round"
         />
         <path
+          className="teaser__logoStroke"
           d="M12.3 12.5h2.9"
+          pathLength={100}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
@@ -99,8 +117,24 @@ function SocialIcon({ name }: { name: SocialIconName }) {
 
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5.3 4.5h3.4L18.7 19.5h-3.4z" fill="currentColor" />
-      <path d="M15.9 4.5h2.8L8.1 19.5H5.3z" fill="currentColor" />
+      <path
+        className="teaser__logoStroke"
+        d="M6.3 5.1L17.6 18.9"
+        pathLength={100}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      <path
+        className="teaser__logoStroke"
+        d="M17.7 5.1L6.4 18.9"
+        pathLength={100}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

@@ -242,6 +242,18 @@ body {
     height: 100%;
 }
 
+.teaser__socialIcon .teaser__logoStroke {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.teaser__socialIcon .teaser__logoDot {
+    transform-origin: center;
+}
+
 .teaser__socialLabel {
     font-size: 0.95rem;
     font-weight: 540;
@@ -286,6 +298,14 @@ body {
     transform: translateY(var(--logo-lift)) scale(var(--logo-scale)) rotate(var(--logo-tilt));
 }
 
+.teaser__socialLink:focus-visible .teaser__logoStroke {
+    animation: social-logo-draw 560ms steps(24, end) both;
+}
+
+.teaser__socialLink:focus-visible .teaser__logoDot {
+    animation: social-logo-dot 240ms ease-out 140ms both;
+}
+
 @media (hover: hover) and (pointer: fine) {
     .teaser__socialLink:hover {
         transform: translateY(-1px);
@@ -300,6 +320,14 @@ body {
 
     .teaser__socialLink:hover .teaser__socialHandle {
         color: rgba(22, 21, 19, 0.82);
+    }
+
+    .teaser__socialLink:hover .teaser__logoStroke {
+        animation: social-logo-draw 560ms steps(24, end) both;
+    }
+
+    .teaser__socialLink:hover .teaser__logoDot {
+        animation: social-logo-dot 240ms ease-out 140ms both;
     }
 }
 
@@ -347,6 +375,33 @@ body {
     }
 }
 
+@keyframes social-logo-draw {
+    0% {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        opacity: 0.2;
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes social-logo-dot {
+    0% {
+        opacity: 0;
+        transform: scale(0.75);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 @media (max-width: 640px) {
     .teaser {
         gap: 0.95rem;
@@ -382,5 +437,10 @@ body {
 
     .teaser__socialIcon {
         transform: none;
+    }
+
+    .teaser__logoStroke,
+    .teaser__logoDot {
+        animation: none !important;
     }
 }
