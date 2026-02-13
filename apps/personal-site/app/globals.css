@@ -77,10 +77,10 @@ body {
   animation: reveal-name 1000ms steps(18, end) 200ms forwards;
 }
 
-.teaser__comma {
+.teaser__period {
   display: inline-block;
   transform-origin: 55% 75%;
-  animation: comma-drift 3.3s ease-in-out 1s infinite;
+  animation: punctuation-drift 3.3s ease-in-out 1s infinite;
 }
 
 .teaser__lede {
@@ -179,7 +179,7 @@ body {
   }
 }
 
-@keyframes comma-drift {
+@keyframes punctuation-drift {
   0%,
   100% {
     transform: translate3d(0, 0, 0);

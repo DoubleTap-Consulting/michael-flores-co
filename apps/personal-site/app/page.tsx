@@ -12,8 +12,8 @@ export default function HomePage() {
         <p className="teaser__kicker">personal-site redesign in progress</p>
         <h1 id="landing-title" className="teaser__title">
           <span className="teaser__name">Michael Flores</span>
-          <span className="teaser__comma" aria-hidden="true">
-            ,
+          <span className="teaser__period" aria-hidden="true">
+            .
           </span>
         </h1>
 
