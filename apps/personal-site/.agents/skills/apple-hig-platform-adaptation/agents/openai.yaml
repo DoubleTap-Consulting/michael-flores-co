@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Platform Adaptation"
+  short_description: "Adapt one system across devices"
+  default_prompt: "Use $apple-hig-platform-adaptation to define responsive, platform-aware behavior for personal-site components and layouts."

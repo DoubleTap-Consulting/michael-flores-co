@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Navigation"
+  short_description: "Structure IA and navigation like Apple"
+  default_prompt: "Use $apple-hig-navigation-and-ia to redesign navigation, menus, and information architecture for the personal-site."

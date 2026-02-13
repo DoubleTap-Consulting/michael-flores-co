@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Foundations"
+  short_description: "Define Apple-style visual foundations"
+  default_prompt: "Use $apple-hig-foundations to define design tokens and core visual hierarchy for the personal-site redesign."

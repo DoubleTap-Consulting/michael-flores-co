@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Content Expression"
+  short_description: "Shape copy and visuals with HIG"
+  default_prompt: "Use $apple-hig-content-brand-expression to refine voice, copy, iconography, and imagery for the personal-site redesign."

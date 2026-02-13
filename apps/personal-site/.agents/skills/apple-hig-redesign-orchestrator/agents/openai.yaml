@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Orchestrator"
+  short_description: "Route full redesign across HIG skills"
+  default_prompt: "Use $apple-hig-redesign-orchestrator to plan and sequence a complete Apple-style redesign for the personal-site."

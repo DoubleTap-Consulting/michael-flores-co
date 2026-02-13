@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Interaction"
+  short_description: "Define Apple-style controls and feedback"
+  default_prompt: "Use $apple-hig-interaction-controls to standardize control behavior, interaction states, and feedback in the personal-site."

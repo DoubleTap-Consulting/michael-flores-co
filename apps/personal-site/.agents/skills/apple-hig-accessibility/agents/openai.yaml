@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple HIG Accessibility"
+  short_description: "Implement Apple-aligned accessibility"
+  default_prompt: "Use $apple-hig-accessibility to run an accessibility-first redesign audit and remediation plan for the personal-site."
