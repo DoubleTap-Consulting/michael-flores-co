@@ -37,7 +37,7 @@ export default function HomePage() {
 
         <p className="teaser__contact">
           For now, say hello at{" "}
-          <a href="mailto:hello@michaelflores.co">hello@michaelflores.co</a>.
+          <a href="mailto:me@michaelflores.co">me@michaelflores.co</a>.
         </p>
       </section>
     </main>

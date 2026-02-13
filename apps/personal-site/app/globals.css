@@ -92,8 +92,12 @@ body {
 
 .teaser__status {
   margin: 0.2rem 0 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2rem;
   font-family: var(--mono-font);
   font-size: clamp(0.74rem, 1.1vw, 0.84rem);
+  line-height: 1.2;
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--muted);
@@ -104,12 +108,13 @@ body {
   overflow: hidden;
   white-space: nowrap;
   max-width: 0;
-  animation: status-type 1400ms steps(24, end) 850ms forwards;
+  animation: status-type 1400ms steps(26, end) 850ms forwards;
 }
 
 .teaser__cursor {
-  margin-left: 0.2rem;
   display: inline-block;
+  line-height: 1;
+  transform: translateY(-0.04em);
   animation: cursor-blink 950ms steps(1, end) infinite;
 }
 
@@ -175,7 +180,7 @@ body {
 
 @keyframes status-type {
   to {
-    max-width: 24ch;
+    max-width: 31ch;
   }
 }
 
