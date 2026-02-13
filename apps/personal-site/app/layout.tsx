@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Michael Flores | Product Engineer",
+  title: "Michael Flores | Coming Soon",
   description:
-    "Portfolio and personal brand site for Michael Flores, a Product Engineer focused on full-stack systems, interaction design, and UX."
+    "A teaser for the upcoming portfolio redesign of Michael Flores."
 };
 
 export default function RootLayout({

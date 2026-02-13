@@ -1,22 +1,44 @@
+const signalPhrases = [
+  "selected product stories",
+  "engineering notes",
+  "systems thinking",
+  "interaction studies",
+];
+
 export default function HomePage() {
   return (
-    <main className="page">
-      <section className="hero">
-        <p className="eyebrow">Product Engineer</p>
-        <h1>Michael Flores</h1>
-        <p>
-          I build full-stack product experiences with high engineering quality and a
-          strong interaction design and UX lens.
-        </p>
-      </section>
+    <main className="teaser-page">
+      <section className="teaser" aria-labelledby="landing-title">
+        <p className="teaser__kicker">personal-site redesign in progress</p>
+        <h1 id="landing-title" className="teaser__title">
+          <span className="teaser__name">Michael Flores</span>
+          <span className="teaser__comma" aria-hidden="true">
+            ,
+          </span>
+        </h1>
 
-      <section className="panel">
-        <h2>What this site will hold</h2>
-        <ul>
-          <li>Selected projects and outcomes.</li>
-          <li>Technical deep dives and implementation notes.</li>
-          <li>Approach to product engineering, design systems, and DX.</li>
+        <p className="teaser__lede">
+          A new portfolio is being shaped with a quieter visual language,
+          sharper case studies, and purposeful motion.
+        </p>
+
+        <p className="teaser__status" aria-live="polite">
+          <span className="teaser__statusText">coming soon / spring 2026</span>
+          <span className="teaser__cursor" aria-hidden="true">
+            |
+          </span>
+        </p>
+
+        <ul className="teaser__signals" aria-label="Upcoming content">
+          {signalPhrases.map((phrase) => (
+            <li key={phrase}>{phrase}</li>
+          ))}
         </ul>
+
+        <p className="teaser__contact">
+          For now, say hello at{" "}
+          <a href="mailto:hello@michaelflores.co">hello@michaelflores.co</a>.
+        </p>
       </section>
     </main>
   );
