@@ -6,6 +6,10 @@
     --muted: #5d5952;
     --line: rgba(22, 21, 19, 0.14);
     --accent: #1c1a17;
+    --link: #1c1a17;
+    --link-visited: #5a4b3e;
+    --link-rule: rgba(28, 26, 23, 0.3);
+    --link-ink: rgba(28, 26, 23, 0.86);
     --focus: #345ce9;
     --header-font: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
     --body-font: "SF Pro Text", "Avenir Next", "Helvetica Neue", sans-serif;
@@ -150,19 +154,59 @@ body {
     color: var(--muted);
 }
 
-.teaser__contactEmail {
-    color: var(--accent);
-    text-underline-offset: 0.2em;
-    text-decoration-thickness: 1px;
-    text-decoration-color: rgba(28, 26, 23, 0.35);
-    transition: text-decoration-color 180ms var(--ease-out);
+.teaser__link {
+    color: var(--link);
+    text-decoration: none;
+    position: relative;
+    touch-action: manipulation;
+    transition: color 180ms var(--ease-out);
 }
 
-.teaser__contactEmail:hover {
-    text-decoration-color: currentcolor;
+.teaser__link::before,
+.teaser__link::after {
+    content: "";
+    position: absolute;
+    inset-inline: -0.02em;
+    pointer-events: none;
+    border-radius: 999px;
 }
 
-.teaser__contactEmail:focus-visible {
+.teaser__link::before {
+    bottom: -0.08em;
+    height: 1px;
+    background: var(--link-rule);
+}
+
+.teaser__link::after {
+    bottom: -0.11em;
+    height: 2px;
+    background: var(--link-ink);
+    transform-origin: left center;
+    transform: scaleX(0) rotate(-0.55deg);
+    opacity: 0;
+    transition:
+        transform 220ms var(--ease-out),
+        opacity 180ms var(--ease-out),
+        background-color 180ms var(--ease-out);
+}
+
+.teaser__link:visited {
+    color: var(--link-visited);
+}
+
+.teaser__link:visited::before {
+    background: rgba(90, 75, 62, 0.45);
+}
+
+.teaser__link:visited::after {
+    background: #5a4b3e;
+}
+
+.teaser__link:active::after {
+    transform: scaleX(0.9) rotate(0.18deg);
+}
+
+.teaser__link:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 3px;
     border-radius: 3px;
@@ -307,6 +351,11 @@ body {
 }
 
 @media (hover: hover) and (pointer: fine) {
+    .teaser__link:hover::after {
+        transform: scaleX(1) rotate(0.12deg);
+        opacity: 1;
+    }
+
     .teaser__socialLink:hover {
         transform: translateY(-1px);
         border-color: rgba(28, 26, 23, 0.35);

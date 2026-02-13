@@ -153,7 +153,12 @@ export default function HomePage() {
 
         <p className="teaser__lede">
           A new portfolio is being shaped with a quieter visual language,
-          sharper case studies, and purposeful motion.
+          sharper case studies, and purposeful motion. You can see my previous
+          portfolio{" "}
+          <a className="teaser__link" href="https://michaelflores.io">
+            here
+          </a>
+          .
         </p>
 
         <p className="teaser__status" aria-live="polite">
@@ -172,10 +177,7 @@ export default function HomePage() {
         <div className="teaser__reach">
           <p className="teaser__contact">
             For now, say hello at{" "}
-            <a
-              className="teaser__contactEmail"
-              href="mailto:me@michaelflores.co"
-            >
+            <a className="teaser__link" href="mailto:me@michaelflores.co">
               me@michaelflores.co
             </a>
             .
@@ -205,7 +207,9 @@ export default function HomePage() {
                         <SocialIcon name={channel.icon} />
                       </span>
                     </span>
-                    <span className="teaser__socialHandle">{channel.handle}</span>
+                    <span className="teaser__socialHandle">
+                      {channel.handle}
+                    </span>
                   </a>
                 </li>
               ))}
