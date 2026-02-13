@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <main className="teaser-page">
       <section className="teaser" aria-labelledby="landing-title">
-        <p className="teaser__kicker">personal-site redesign in progress</p>
+        <p className="teaser__kicker">work in progress</p>
         <h1 id="landing-title" className="teaser__title">
           <span className="teaser__name">Michael Flores</span>
           <span className="teaser__period" aria-hidden="true">
