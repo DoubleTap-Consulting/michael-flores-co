@@ -49,3 +49,8 @@ Each app is intentionally self-contained (its own `package.json`, `tsconfig.json
 ## Suggested environment variables
 
 Set environment variables per Vercel project so secrets are isolated between the portfolio app and the experimental workflow app.
+
+### `apps/agentic-workflow`
+
+- `SENTRY_WEBHOOK_SECRET`: shared secret required by `POST /api/sentry-webhook`.
+  The webhook sender must send this value in the `x-webhook-secret` request header.
