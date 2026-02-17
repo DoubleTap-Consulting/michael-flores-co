@@ -153,12 +153,7 @@ export default function HomePage() {
 
         <p className="teaser__lede">
           A new portfolio is being shaped with a quieter visual language,
-          sharper case studies, and purposeful motion. You can see my previous
-          portfolio{" "}
-          <a className="teaser__link" href="https://michaelflores.io">
-            here
-          </a>
-          .
+          sharper case studies, and purposeful motion.
         </p>
 
         <p className="teaser__status" aria-live="polite">
