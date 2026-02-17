@@ -32,6 +32,10 @@ body {
     color: var(--text);
 }
 
+.site-shell {
+    min-height: 100svh;
+}
+
 .teaser-page {
     min-height: 100svh;
     display: grid;
@@ -465,6 +469,560 @@ body {
     }
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.site-rail {
+    position: fixed;
+    left: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+}
+
+.site-rail__panel {
+    width: 2.9rem;
+    border: 1px solid rgba(22, 21, 19, 0.2);
+    border-radius: 0.9rem;
+    background: rgba(249, 248, 244, 0.9);
+    backdrop-filter: blur(7px);
+    box-shadow: 0 18px 40px -36px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    transition:
+        width 220ms var(--ease-out),
+        border-color 200ms var(--ease-out),
+        box-shadow 200ms var(--ease-out);
+}
+
+.site-rail__panel:is(:hover, :focus-within) {
+    width: 12.5rem;
+    border-color: rgba(22, 21, 19, 0.34);
+    box-shadow: 0 20px 42px -30px rgba(0, 0, 0, 0.4);
+}
+
+.site-rail__hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.9rem;
+    width: 2.9rem;
+    font-family: var(--mono-font);
+    font-size: 0.67rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.site-rail__list {
+    list-style: none;
+    margin: 0;
+    padding: 0 0.42rem 0.42rem;
+    display: grid;
+    gap: 0.35rem;
+}
+
+.site-rail__link {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 0.72rem;
+    border-radius: 0.55rem;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition:
+        opacity 180ms var(--ease-out),
+        transform 200ms var(--ease-out),
+        background-color 160ms var(--ease-out);
+}
+
+.site-rail__panel:is(:hover, :focus-within) .site-rail__link {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.site-rail__link:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.site-rail__link[aria-current="page"] {
+    background: rgba(22, 21, 19, 0.09);
+    font-weight: 560;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .site-rail__link:hover {
+        background: rgba(22, 21, 19, 0.09);
+    }
+}
+
+.resume-page {
+    min-height: 100svh;
+    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.2rem, 4vw, 3.5rem)
+        clamp(2rem, 6vw, 4rem) clamp(4rem, 8vw, 8rem);
+    display: grid;
+    gap: clamp(1.1rem, 2.6vw, 2rem);
+}
+
+.resume-page__intro {
+    width: min(62rem, 100%);
+    display: grid;
+    gap: 0.62rem;
+}
+
+.resume-page__kicker {
+    margin: 0;
+    font-family: var(--mono-font);
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.resume-page__title {
+    margin: 0;
+    font-family: var(--header-font);
+    font-size: clamp(1.9rem, 4.6vw, 3.6rem);
+    font-weight: 520;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+}
+
+.resume-page__lede {
+    margin: 0;
+    width: min(70ch, 100%);
+    color: var(--muted);
+    font-size: clamp(0.94rem, 1.5vw, 1.08rem);
+    line-height: 1.5;
+}
+
+.resume-stage {
+    width: min(74rem, 100%);
+    border: 1px solid rgba(22, 21, 19, 0.14);
+    border-radius: 1.1rem;
+    background: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(4px);
+    padding: clamp(0.9rem, 2.2vw, 1.35rem);
+    display: grid;
+    gap: 0.9rem;
+    position: relative;
+    animation: teaser-enter 380ms var(--ease-out) both;
+}
+
+.resume-stage.is-zoomed {
+    border-color: rgba(22, 21, 19, 0.26);
+}
+
+.resume-overview {
+    position: relative;
+    width: min(54rem, 100%);
+    margin: 0 auto;
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+
+.resume-overview__frame {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 50%;
+    will-change: transform;
+    transition: transform 620ms var(--ease-out);
+}
+
+.resume-overview__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.resume-overview__tick {
+    stroke: rgba(22, 21, 19, 0.16);
+    stroke-width: 1;
+}
+
+.resume-overview__tick--primary {
+    stroke: rgba(22, 21, 19, 0.24);
+}
+
+.resume-overview__mark {
+    transition:
+        stroke 180ms var(--ease-out),
+        opacity 220ms var(--ease-out);
+}
+
+.resume-overview__mark--major {
+    stroke: rgba(22, 21, 19, 0.76);
+    stroke-width: 1.45;
+}
+
+.resume-overview__mark--minor {
+    stroke: rgba(22, 21, 19, 0.42);
+    stroke-width: 1.15;
+}
+
+.resume-overview__mark.is-active {
+    stroke: #d8611a;
+}
+
+.resume-overview__mark.is-muted {
+    opacity: 0.24;
+}
+
+.resume-overview__targets {
+    position: absolute;
+    inset: 0;
+}
+
+.resume-overview__hit {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 2.65rem;
+    height: 2.65rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+}
+
+.resume-overview__hit:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.resume-overview__label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    display: grid;
+    gap: 0.08rem;
+    cursor: pointer;
+    font-family: var(--header-font);
+    font-size: clamp(0.78rem, 1.2vw, 1.05rem);
+    font-style: italic;
+    line-height: 1.18;
+    transition:
+        color 160ms var(--ease-out),
+        opacity 220ms var(--ease-out),
+        transform 220ms var(--ease-out);
+}
+
+.resume-overview__label > span:last-child {
+    font-family: var(--body-font);
+    font-size: 0.83em;
+}
+
+.resume-overview__label.is-left {
+    text-align: right;
+}
+
+.resume-overview__label.is-center {
+    text-align: center;
+}
+
+.resume-overview__label.is-right {
+    text-align: left;
+}
+
+.resume-overview__label.is-active {
+    color: #d8611a;
+}
+
+.resume-overview__label.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.94);
+}
+
+.resume-overview__label:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.resume-overview__tooltip {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    padding: 0.46rem 0.58rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(22, 21, 19, 0.14);
+    background: rgba(255, 255, 255, 0.92);
+    display: grid;
+    gap: 0.12rem;
+    pointer-events: none;
+    text-align: center;
+}
+
+.resume-overview__tooltip p {
+    margin: 0;
+    font-size: 0.72rem;
+    line-height: 1.2;
+}
+
+.resume-overview__tooltip p:first-child {
+    font-weight: 560;
+}
+
+.resume-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: clamp(0.6rem, 2vw, 1.1rem);
+}
+
+.resume-overlay__sheet {
+    pointer-events: none;
+    width: min(42rem, 100%);
+    max-height: min(74%, 40rem);
+    border: 1px dashed rgba(22, 21, 19, 0.28);
+    border-radius: 0.95rem;
+    background: rgba(248, 247, 242, 0.96);
+    box-shadow: 0 22px 44px -34px rgba(10, 10, 9, 0.48);
+    backdrop-filter: blur(6px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    transition:
+        opacity 320ms var(--ease-out),
+        transform 360ms var(--ease-out);
+}
+
+.resume-overlay.is-open .resume-overlay__sheet {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.resume-overlay__grabber {
+    width: 3.6rem;
+    height: 0.24rem;
+    border-radius: 999px;
+    background: rgba(22, 21, 19, 0.22);
+    margin: 0.58rem auto 0.44rem;
+}
+
+.resume-overlay__head {
+    padding: 0 1rem 0.55rem;
+    display: grid;
+    gap: 0.42rem;
+}
+
+.resume-overlay__kicker {
+    margin: 0;
+    font-family: var(--mono-font);
+    font-size: 0.71rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.resume-overlay__title {
+    margin: 0;
+    font-family: var(--header-font);
+    font-size: clamp(1.15rem, 2.5vw, 1.62rem);
+    font-style: italic;
+    font-weight: 560;
+    line-height: 1.1;
+}
+
+.resume-overlay__meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.resume-overlay__close {
+    justify-self: start;
+    border: 1px solid rgba(22, 21, 19, 0.24);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--text);
+    border-radius: 999px;
+    min-height: 2.35rem;
+    padding: 0.42rem 0.82rem;
+    font-family: var(--mono-font);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        border-color 160ms var(--ease-out),
+        background-color 160ms var(--ease-out);
+}
+
+.resume-overlay__close:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.resume-overlay__body {
+    padding: 0 1rem 0.8rem;
+    color: var(--text);
+    display: grid;
+    gap: 0.72rem;
+}
+
+.resume-overlay__body p {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.54;
+    color: rgba(22, 21, 19, 0.92);
+}
+
+.resume-overlay__body h3 {
+    margin: 0.2rem 0 0;
+    font-size: 0.84rem;
+    font-family: var(--mono-font);
+    font-weight: 560;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.resume-overlay__body ul {
+    margin: 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.35rem;
+}
+
+.resume-overlay__body li {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: rgba(22, 21, 19, 0.86);
+}
+
+.resume-overlay__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+}
+
+.resume-overlay__chip {
+    border: 1px solid rgba(22, 21, 19, 0.2);
+    background: rgba(255, 255, 255, 0.68);
+    color: var(--text);
+    border-radius: 999px;
+    min-height: 2.35rem;
+    padding: 0.28rem 0.68rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition:
+        border-color 160ms var(--ease-out),
+        background-color 160ms var(--ease-out);
+}
+
+.resume-overlay__chip:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.resume-overlay__foot {
+    border-top: 1px solid rgba(22, 21, 19, 0.12);
+    padding: 0.72rem 1rem 0.92rem;
+    display: flex;
+    gap: 0.58rem;
+}
+
+.resume-overlay__step {
+    border: 1px solid rgba(22, 21, 19, 0.24);
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--text);
+    border-radius: 0.56rem;
+    min-height: 2.75rem;
+    min-width: 6.2rem;
+    padding: 0.52rem 0.78rem;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition:
+        border-color 160ms var(--ease-out),
+        background-color 160ms var(--ease-out);
+}
+
+.resume-overlay__step:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.resume-overlay__step:disabled {
+    cursor: not-allowed;
+    opacity: 0.52;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .resume-overlay__close:hover,
+    .resume-overlay__chip:hover,
+    .resume-overlay__step:hover {
+        border-color: rgba(22, 21, 19, 0.42);
+        background: rgba(255, 255, 255, 0.9);
+    }
+}
+
+@media (max-width: 860px) {
+    .site-rail {
+        top: auto;
+        bottom: 0.7rem;
+        left: 0.7rem;
+        transform: none;
+    }
+
+    .site-rail__panel {
+        width: 12rem;
+    }
+
+    .site-rail__link {
+        opacity: 1;
+        transform: none;
+    }
+
+    .resume-page {
+        padding: 1rem 1rem 4.4rem 1rem;
+    }
+
+    .resume-overview {
+        width: 100%;
+    }
+
+    .resume-overview__label {
+        font-size: 0.78rem;
+    }
+
+    .resume-overlay {
+        padding: 0.5rem;
+    }
+
+    .resume-overlay__sheet {
+        width: 100%;
+        max-height: 78%;
+    }
+
+    .resume-overlay__head,
+    .resume-overlay__body,
+    .resume-overlay__foot {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -491,5 +1049,14 @@ body {
     .teaser__logoStroke,
     .teaser__logoDot {
         animation: none !important;
+    }
+
+    .site-rail__panel,
+    .site-rail__link,
+    .resume-overview__mark,
+    .resume-overview__label,
+    .resume-overview__frame,
+    .resume-overlay__sheet {
+        transition: none !important;
     }
 }
