@@ -17,6 +17,10 @@ type TimelinePoint = {
   highlights: string[];
 };
 
+type PositionedTimelinePoint = TimelinePoint & {
+  degree: number;
+};
+
 // Replace these seed entries with your real roles and milestones.
 const timelinePoints: TimelinePoint[] = [
   {
@@ -181,16 +185,40 @@ const timelinePoints: TimelinePoint[] = [
   }
 ];
 
-const orderedTimeline = [...timelinePoints].sort((a, b) => a.time - b.time);
+const MIN_GAP = 5;
+
+const orderedTimeline: PositionedTimelinePoint[] = [...timelinePoints]
+  .sort((a, b) => a.time - b.time)
+  .reduce<PositionedTimelinePoint[]>((accumulator, item, index) => {
+    if (index === 0) {
+      accumulator.push({ ...item, degree: 0 });
+      return accumulator;
+    }
+
+    const previousItem = accumulator[index - 1];
+    const currentYear = item.time;
+    const previousYear = previousItem.time;
+    const yearDifference = currentYear - previousYear;
+    const increment =
+      yearDifference >= MIN_GAP
+        ? yearDifference
+        : MIN_GAP + yearDifference;
+
+    accumulator.push({
+      ...item,
+      degree: previousItem.degree + increment
+    });
+
+    return accumulator;
+  }, []);
+
 const majorTimeline = orderedTimeline.filter((point) => point.kind === "major");
 const timelineById = new Map(orderedTimeline.map((point) => [point.id, point]));
 const timelineIndexById = new Map(
   orderedTimeline.map((point, index) => [point.id, index])
 );
 
-const minTime = orderedTimeline[0]?.time ?? 0;
-const maxTime = orderedTimeline[orderedTimeline.length - 1]?.time ?? 1;
-const timeSpan = Math.max(maxTime - minTime, 1);
+const maxDegree = Math.max(orderedTimeline[orderedTimeline.length - 1]?.degree ?? 1, 1);
 
 const OVERVIEW_SIZE = 920;
 const OVERVIEW_HALF = OVERVIEW_SIZE / 2;
@@ -199,13 +227,17 @@ const OVERVIEW_TICK_OUTER = 286;
 const OVERVIEW_MAJOR_OUTER = 326;
 const OVERVIEW_MINOR_OUTER = 300;
 const OVERVIEW_LABEL_RADIUS = 376;
-const OVERLAY_SCALE = 1.9;
-const OVERLAY_TARGET_Y_RATIO = -0.22;
-const DISMISS_WHEEL_THRESHOLD = 160;
-const DISMISS_TOUCH_THRESHOLD = 72;
+const OVERLAY_TARGET_Y_RATIO = -0.34;
+const SCROLL_SNAP = 250;
+const SCALE_ZOOM = 6;
+const SCALE_DEFAULT = 1;
+const SCALE_ENTRY = 2.25;
+const SCALE_SCROLL_STEP = 0.02;
+const SHEET_REVEAL_DELAY_MS = 220;
+const ZOOM_OUT_DELAY_MS = 90;
 
-function toOverviewAngle(time: number): number {
-  return ((time - minTime) / timeSpan) * 360 - 90;
+function toOverviewAngle(degree: number): number {
+  return (degree / maxDegree) * 360 - 90;
 }
 
 function toPoint(angle: number, radius: number) {
@@ -220,6 +252,29 @@ function toPercent(xOrY: number) {
   return ((xOrY + OVERVIEW_HALF) / OVERVIEW_SIZE) * 100;
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function areIntersecting(
+  firstNode: Element | null,
+  secondNode: Element | null
+) {
+  if (!firstNode || !secondNode) {
+    return false;
+  }
+
+  const firstRect = firstNode.getBoundingClientRect();
+  const secondRect = secondNode.getBoundingClientRect();
+
+  return !(
+    firstRect.right < secondRect.left ||
+    firstRect.left > secondRect.right ||
+    firstRect.bottom < secondRect.top ||
+    firstRect.top > secondRect.bottom
+  );
+}
+
 function formatPointLabel(point: TimelinePoint) {
   return `${point.yearLabel} · ${point.role} · ${point.title}`;
 }
@@ -228,12 +283,19 @@ export default function ResumeTimelineExperience() {
   const [selectedId, setSelectedId] = useState(majorTimeline[0]?.id ?? "");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(SCALE_DEFAULT);
+  const [timelineBlur, setTimelineBlur] = useState(0);
   const [radialSize, setRadialSize] = useState(860);
 
   const radialRef = useRef<HTMLDivElement>(null);
   const overlaySheetRef = useRef<HTMLDivElement>(null);
-  const dismissWheelProgressRef = useRef(0);
-  const touchStartYRef = useRef<number | null>(null);
+  const activeNodeRef = useRef<HTMLButtonElement | null>(null);
+  const zoomScaleRef = useRef(SCALE_DEFAULT);
+  const intersectingAtYRef = useRef(0);
+  const lastScrollTopRef = useRef(0);
+  const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const selectedIndex = Math.max(
     orderedTimeline.findIndex((point) => point.id === selectedId),
@@ -270,14 +332,14 @@ export default function ResumeTimelineExperience() {
     [selectedPoint]
   );
 
-  const selectedAngle = toOverviewAngle(selectedPoint.time);
+  const selectedAngle = toOverviewAngle(selectedPoint.degree);
   const selectedRadius =
     selectedPoint.kind === "major" ? OVERVIEW_MAJOR_OUTER : OVERVIEW_MINOR_OUTER;
   const selectedVector = toPoint(selectedAngle, selectedRadius);
   const selectedNormalizedX = selectedVector.x / OVERVIEW_HALF;
   const selectedNormalizedY = selectedVector.y / OVERVIEW_HALF;
 
-  const currentScale = isOverlayOpen ? OVERLAY_SCALE : 1;
+  const currentScale = isOverlayOpen ? zoomScale : SCALE_DEFAULT;
   const currentPanX = isOverlayOpen
     ? -selectedNormalizedX * currentScale * (radialSize / 2)
     : 0;
@@ -287,33 +349,102 @@ export default function ResumeTimelineExperience() {
     : 0;
 
   const radialFrameStyle = {
-    transform: `translate3d(${currentPanX.toFixed(2)}px, ${currentPanY.toFixed(2)}px, 0) scale(${currentScale})`
+    transform: `translate3d(${currentPanX.toFixed(2)}px, ${currentPanY.toFixed(2)}px, 0) scale(${currentScale})`,
+    filter: `blur(${timelineBlur.toFixed(2)}px)`
   };
 
-  const closeOverlay = useCallback(() => {
-    setIsOverlayOpen(false);
-    setHoveredId(null);
-    dismissWheelProgressRef.current = 0;
-    touchStartYRef.current = null;
+  const syncScale = useCallback((nextScale: number) => {
+    zoomScaleRef.current = nextScale;
+    setZoomScale(nextScale);
+  }, []);
 
-    if (overlaySheetRef.current) {
-      overlaySheetRef.current.scrollTop = 0;
+  const updateTimelineBlur = useCallback(
+    (scrollY: number) => {
+      if (!isOverlayOpen || !isSheetOpen) {
+        setTimelineBlur(0);
+        intersectingAtYRef.current = 0;
+        return;
+      }
+
+      const sheetNode = overlaySheetRef.current;
+      const activeNode = activeNodeRef.current;
+      if (!sheetNode || !activeNode) {
+        setTimelineBlur(0);
+        return;
+      }
+
+      const intersecting = areIntersecting(sheetNode, activeNode);
+      if (intersecting && intersectingAtYRef.current === 0) {
+        intersectingAtYRef.current = Math.abs(scrollY);
+      }
+
+      if (Math.abs(scrollY) === 0) {
+        intersectingAtYRef.current = 0;
+        setTimelineBlur(0);
+        return;
+      }
+
+      if (intersectingAtYRef.current === 0) {
+        setTimelineBlur(0);
+        return;
+      }
+
+      const offsetY = Math.abs(scrollY) - intersectingAtYRef.current;
+      const nextBlur = clamp(offsetY * 0.005, 0, 4);
+      setTimelineBlur(nextBlur);
+    },
+    [isOverlayOpen, isSheetOpen]
+  );
+
+  const clearOverlayTimers = useCallback(() => {
+    if (openTimerRef.current) {
+      clearTimeout(openTimerRef.current);
+      openTimerRef.current = null;
+    }
+
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
     }
   }, []);
 
-  const openPoint = useCallback((id: string) => {
-    setSelectedId(id);
-    setIsOverlayOpen(true);
+  const closeOverlay = useCallback(() => {
+    clearOverlayTimers();
+    setIsSheetOpen(false);
     setHoveredId(null);
-    dismissWheelProgressRef.current = 0;
-    touchStartYRef.current = null;
+    lastScrollTopRef.current = 0;
+    intersectingAtYRef.current = 0;
+    setTimelineBlur(0);
+    syncScale(SCALE_DEFAULT);
 
-    requestAnimationFrame(() => {
+    closeTimerRef.current = setTimeout(() => {
+      setIsOverlayOpen(false);
+
       if (overlaySheetRef.current) {
         overlaySheetRef.current.scrollTop = 0;
       }
-    });
-  }, []);
+    }, ZOOM_OUT_DELAY_MS);
+  }, [clearOverlayTimers, syncScale]);
+
+  const openPoint = useCallback((id: string) => {
+    clearOverlayTimers();
+    setSelectedId(id);
+    setIsOverlayOpen(true);
+    setIsSheetOpen(false);
+    setHoveredId(null);
+    lastScrollTopRef.current = 0;
+    intersectingAtYRef.current = 0;
+    setTimelineBlur(0);
+    syncScale(SCALE_ENTRY);
+
+    openTimerRef.current = setTimeout(() => {
+      if (overlaySheetRef.current) {
+        overlaySheetRef.current.scrollTop = 0;
+      }
+
+      setIsSheetOpen(true);
+    }, SHEET_REVEAL_DELAY_MS);
+  }, [clearOverlayTimers, syncScale]);
 
   useEffect(() => {
     const node = radialRef.current;
@@ -341,7 +472,7 @@ export default function ResumeTimelineExperience() {
   }, []);
 
   useEffect(() => {
-    if (!isOverlayOpen) {
+    if (!isOverlayOpen && !isSheetOpen) {
       return;
     }
 
@@ -356,53 +487,53 @@ export default function ResumeTimelineExperience() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeOverlay, isOverlayOpen]);
+  }, [closeOverlay, isOverlayOpen, isSheetOpen]);
 
-  function handleSheetWheel(event: React.WheelEvent<HTMLDivElement>) {
-    if (!isOverlayOpen || !overlaySheetRef.current) {
+  useEffect(() => {
+    return () => {
+      clearOverlayTimers();
+    };
+  }, [clearOverlayTimers]);
+
+  useEffect(() => {
+    if (!isOverlayOpen || !isSheetOpen) {
       return;
     }
 
-    const atTop = overlaySheetRef.current.scrollTop <= 0;
+    intersectingAtYRef.current = 0;
+    const currentScrollY = overlaySheetRef.current?.scrollTop ?? 0;
+    updateTimelineBlur(currentScrollY);
+  }, [isOverlayOpen, isSheetOpen, selectedId, updateTimelineBlur]);
 
-    if (atTop && event.deltaY < 0) {
-      dismissWheelProgressRef.current += Math.abs(event.deltaY);
+  function handleSheetScroll(event: React.UIEvent<HTMLDivElement>) {
+    if (!isOverlayOpen) {
+      return;
+    }
 
-      if (dismissWheelProgressRef.current >= DISMISS_WHEEL_THRESHOLD) {
+    const scrollY = event.currentTarget.scrollTop;
+    const previousScrollY = lastScrollTopRef.current;
+    const deltaY = scrollY - previousScrollY;
+    lastScrollTopRef.current = scrollY;
+
+    if (scrollY <= 0) {
+      syncScale(SCALE_DEFAULT);
+      if (deltaY < 0) {
         closeOverlay();
       }
-
+      updateTimelineBlur(scrollY);
       return;
     }
 
-    dismissWheelProgressRef.current = 0;
-  }
-
-  function handleSheetTouchStart(event: React.TouchEvent<HTMLDivElement>) {
-    touchStartYRef.current = event.touches[0]?.clientY ?? null;
-  }
-
-  function handleSheetTouchMove(event: React.TouchEvent<HTMLDivElement>) {
-    if (!isOverlayOpen || !overlaySheetRef.current || touchStartYRef.current === null) {
+    if (scrollY >= SCROLL_SNAP) {
+      syncScale(SCALE_ZOOM);
+      updateTimelineBlur(scrollY);
       return;
     }
 
-    const currentTouchY = event.touches[0]?.clientY;
-    if (typeof currentTouchY !== "number") {
-      return;
-    }
-
-    const deltaY = currentTouchY - touchStartYRef.current;
-    const atTop = overlaySheetRef.current.scrollTop <= 0;
-
-    if (atTop && deltaY > DISMISS_TOUCH_THRESHOLD) {
-      closeOverlay();
-      touchStartYRef.current = null;
-    }
-  }
-
-  function handleSheetTouchEnd() {
-    touchStartYRef.current = null;
+    let newScale = zoomScaleRef.current + deltaY * SCALE_SCROLL_STEP;
+    newScale = clamp(newScale, SCALE_DEFAULT, SCALE_ZOOM);
+    syncScale(newScale);
+    updateTimelineBlur(scrollY);
   }
 
   return (
@@ -411,8 +542,8 @@ export default function ResumeTimelineExperience() {
         <p className="resume-page__kicker">resume timeline</p>
         <h1 className="resume-page__title">Career story, mapped over time</h1>
         <p className="resume-page__lede">
-          Click any point to zoom in. A scrollable detail overlay appears above
-          the radial chart. Scroll up at the top of that overlay to dismiss.
+          Click any point to zoom in. Scroll inside the sheet to read and drive
+          deeper zoom. Scroll back up to the top to dismiss to the full radial view.
         </p>
       </header>
 
@@ -459,7 +590,7 @@ export default function ResumeTimelineExperience() {
 
               {orderedTimeline.map((point) => {
                 const pointIndex = timelineIndexById.get(point.id) ?? 0;
-                const angle = toOverviewAngle(point.time);
+                const angle = toOverviewAngle(point.degree);
                 const from = toPoint(angle, OVERVIEW_RING_INNER);
                 const to = toPoint(
                   angle,
@@ -490,7 +621,7 @@ export default function ResumeTimelineExperience() {
 
             <div className="resume-overview__targets">
               {orderedTimeline.map((point) => {
-                const angle = toOverviewAngle(point.time);
+                const angle = toOverviewAngle(point.degree);
                 const hitPoint = toPoint(
                   angle,
                   point.kind === "major" ? OVERVIEW_MAJOR_OUTER : OVERVIEW_MINOR_OUTER
@@ -501,6 +632,13 @@ export default function ResumeTimelineExperience() {
                     key={`overview-hit-${point.id}`}
                     type="button"
                     className={`resume-overview__hit resume-overview__hit--${point.kind}`}
+                    ref={
+                      point.id === selectedId
+                        ? (node) => {
+                            activeNodeRef.current = node;
+                          }
+                        : undefined
+                    }
                     style={{
                       left: `${toPercent(hitPoint.x)}%`,
                       top: `${toPercent(hitPoint.y)}%`
@@ -518,7 +656,7 @@ export default function ResumeTimelineExperience() {
 
               {majorTimeline.map((point) => {
                 const pointIndex = timelineIndexById.get(point.id) ?? 0;
-                const angle = toOverviewAngle(point.time);
+                const angle = toOverviewAngle(point.degree);
                 const labelPoint = toPoint(angle, OVERVIEW_LABEL_RADIUS);
                 const alignment =
                   labelPoint.x > 48
@@ -557,8 +695,8 @@ export default function ResumeTimelineExperience() {
                 <div
                   className="resume-overview__tooltip"
                   style={{
-                    left: `${toPercent(toPoint(toOverviewAngle(hoveredMinor.time), OVERVIEW_LABEL_RADIUS - 10).x)}%`,
-                    top: `${toPercent(toPoint(toOverviewAngle(hoveredMinor.time), OVERVIEW_LABEL_RADIUS - 10).y)}%`
+                    left: `${toPercent(toPoint(toOverviewAngle(hoveredMinor.degree), OVERVIEW_LABEL_RADIUS - 10).x)}%`,
+                    top: `${toPercent(toPoint(toOverviewAngle(hoveredMinor.degree), OVERVIEW_LABEL_RADIUS - 10).y)}%`
                   }}
                   role="status"
                   aria-live="polite"
@@ -570,14 +708,11 @@ export default function ResumeTimelineExperience() {
             </div>
           </div>
 
-          <div className={`resume-overlay ${isOverlayOpen ? "is-open" : ""}`}>
+          <div className={`resume-overlay ${isSheetOpen ? "is-open" : ""}`}>
             <article
               className="resume-overlay__sheet"
               ref={overlaySheetRef}
-              onWheel={handleSheetWheel}
-              onTouchStart={handleSheetTouchStart}
-              onTouchMove={handleSheetTouchMove}
-              onTouchEnd={handleSheetTouchEnd}
+              onScroll={handleSheetScroll}
               aria-live="polite"
             >
               <div className="resume-overlay__grabber" aria-hidden="true" />
