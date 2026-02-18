@@ -107,6 +107,8 @@ export default function LandingNarrative() {
             ? lerp(0.24, 0.92, stepB)
             : lerp(0.92, 1, stepC);
       const timelineZ = lerp(-260, 0, stepA * 0.2 + stepB * 0.6 + stepC * 0.2);
+      const heroBlurProgress = clamp((progress - 0.18) / 0.62, 0, 1);
+      const heroBlur = lerp(0, 10, heroBlurProgress * heroBlurProgress);
       const backgroundProgress = clamp(
         (progress - BACKGROUND_TRANSITION_START) /
           (BACKGROUND_TRANSITION_END - BACKGROUND_TRANSITION_START),
@@ -122,7 +124,7 @@ export default function LandingNarrative() {
         "--timeline-scale": timelineScale.toFixed(4),
         "--timeline-opacity": timelineOpacity.toFixed(4),
         "--timeline-z": `${timelineZ.toFixed(2)}px`,
-        "--scene-blur": `${lerp(0, 1.3, stepB).toFixed(2)}px`
+        "--scene-blur": `${heroBlur.toFixed(2)}px`
       });
       setBackgroundProgress(backgroundProgress);
 

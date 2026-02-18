@@ -21,166 +21,204 @@ type PositionedTimelinePoint = TimelinePoint & {
   degree: number;
 };
 
-// Replace these seed entries with your real roles and milestones.
 const timelinePoints: TimelinePoint[] = [
   {
-    id: "northstar-product-designer",
+    id: "macys-application-developer-ui-architect",
     kind: "major",
-    time: 2013.4,
-    yearLabel: "2013",
-    title: "Northstar Studio",
-    organization: "Northstar Studio",
-    role: "Product Designer",
-    period: "2013-2016",
+    time: 2015.95,
+    yearLabel: "2015",
+    title: "Macy's",
+    organization: "Macy's Systems & Technology",
+    role: "Application Developer -> UI Architect",
+    period: "Dec 2015 - Mar 2017",
     summary:
-      "Shifted from visual-only work into product systems and end-to-end UX delivery.",
+      "Built foundational frontend systems for enterprise retail platforms used by tens of thousands of associates.",
     highlights: [
-      "Built first reusable design system primitives across three products.",
-      "Partnered with engineering to map interaction specs into implementation-ready states.",
-      "Reduced onboarding drop-off with a guided setup flow."
+      "Implemented the organization's first design system and internal frontend framework.",
+      "Built reusable UI components, tooling, and internal APIs adopted across multiple applications.",
+      "Shipped employee-facing platform features supporting core retail operations at scale."
     ]
   },
   {
-    id: "design-system-rollout",
+    id: "macys-design-system-foundation",
     kind: "minor",
-    time: 2014.2,
-    yearLabel: "2014",
-    title: "System rollout",
-    organization: "Northstar Studio",
-    role: "Milestone",
-    period: "2014",
-    summary: "Rolled out a shared component language to product + marketing surfaces.",
-    highlights: [
-      "Created interface tokens for spacing and type scale.",
-      "Aligned implementation details with frontend team conventions."
-    ]
-  },
-  {
-    id: "atlas-product-designer",
-    kind: "major",
-    time: 2016.6,
+    time: 2016.35,
     yearLabel: "2016",
-    title: "Atlas Health",
-    organization: "Atlas Health",
-    role: "Senior Product Designer",
-    period: "2016-2019",
+    title: "Design system foundation",
+    organization: "Macy's Systems & Technology",
+    role: "Milestone",
+    period: "2016",
     summary:
-      "Led product design for clinician workflows and shipped faster, safer task routing patterns.",
+      "Standardized shared UI primitives and frontend patterns across internal enterprise tools.",
     highlights: [
-      "Reframed complex desktop workflows into progressive disclosure patterns.",
-      "Cut high-severity support tickets by simplifying high-risk flows.",
-      "Introduced regular UX critique with PM and engineering partners."
+      "Reduced duplicated UI implementation work between teams.",
+      "Improved UI consistency and delivery speed for internal products."
     ]
   },
   {
-    id: "cross-platform-refresh",
-    kind: "minor",
-    time: 2017.8,
+    id: "verys-senior-lead-manager",
+    kind: "major",
+    time: 2017.2,
     yearLabel: "2017",
-    title: "Platform refresh",
-    organization: "Atlas Health",
-    role: "Milestone",
-    period: "2017",
-    summary: "Unified web and tablet patterns into one interaction model.",
-    highlights: [
-      "Documented desktop and touch parity behaviors.",
-      "Defined consistent empty, loading, and error states."
-    ]
-  },
-  {
-    id: "ledger-principal-designer",
-    kind: "major",
-    time: 2019.3,
-    yearLabel: "2019",
-    title: "Ledger Cloud",
-    organization: "Ledger Cloud",
-    role: "Principal Product Designer",
-    period: "2019-2022",
+    title: "Verys",
+    organization: "Verys",
+    role: "Sr Software Engineer -> Lead -> Engineering Manager",
+    period: "Mar 2017 - Mar 2020",
     summary:
-      "Owned key platform experiences and led roadmap work for analytics, workflow tooling, and adoption.",
+      "Led delivery across multiple client programs while growing from senior IC work into technical and people leadership.",
     highlights: [
-      "Drove concept-to-launch for a new reporting experience used by enterprise customers.",
-      "Established event instrumentation strategy with product analytics.",
-      "Mentored designers and partnered on team operating rituals."
+      "Owned frontend and backend delivery across concurrent consulting engagements.",
+      "Defined architecture for large-scale web platforms, including CMS, account, and personalization systems.",
+      "Managed hiring, performance, and technical growth across distributed teams."
     ]
   },
   {
-    id: "design-ops-pivot",
+    id: "doubletap-consulting-founder",
     kind: "minor",
-    time: 2020.4,
-    yearLabel: "2020",
-    title: "Design ops pivot",
-    organization: "Ledger Cloud",
-    role: "Milestone",
-    period: "2020",
-    summary: "Built a design-quality review framework for weekly release cycles.",
-    highlights: [
-      "Created a release readiness checklist shared by design and QA.",
-      "Improved handoff consistency for responsive edge cases."
-    ]
-  },
-  {
-    id: "studio-lead",
-    kind: "major",
-    time: 2022.1,
-    yearLabel: "2022",
-    title: "Independent Studio",
-    organization: "Independent Practice",
-    role: "Design Lead",
-    period: "2022-2024",
+    time: 2018.25,
+    yearLabel: "2018",
+    title: "DoubleTap Consulting",
+    organization: "DoubleTap Consulting",
+    role: "Founder",
+    period: "2017 - Jan 2022",
     summary:
-      "Partnered with founders and product teams to shape product strategy, interface systems, and implementation detail.",
+      "Built and led product engineering engagements for early and growth-stage companies.",
     highlights: [
-      "Designed and launched new product narratives for pre-seed to Series A teams.",
-      "Created reusable implementation specs focused on interaction quality.",
-      "Helped teams establish lightweight product-design decision frameworks."
+      "Delivered systems across consumer apps, enterprise dashboards, and hardware-connected products.",
+      "Owned hiring, onboarding, and execution outcomes for small engineering teams."
     ]
   },
   {
-    id: "prototype-library",
+    id: "lively-video-lead-software-engineer",
+    kind: "major",
+    time: 2020.2,
+    yearLabel: "2020",
+    title: "Lively Video",
+    organization: "Lively Video",
+    role: "Lead Software Engineer",
+    period: "Mar 2020 - Aug 2021",
+    summary:
+      "Owned core architecture and reliability for a real-time video client used by internal and external stakeholders.",
+    highlights: [
+      "Improved runtime performance and stability for live media workflows.",
+      "Established CI/CD, documentation, and development standards.",
+      "Recovered a high-risk initiative by narrowing scope and shipping a reliable partner integration path."
+    ]
+  },
+  {
+    id: "italic-lead-software-engineer-contract",
+    kind: "major",
+    time: 2021.55,
+    yearLabel: "2021",
+    title: "Italic",
+    organization: "Italic",
+    role: "Lead Software Engineer (Contract)",
+    period: "Jul 2021 - Jan 2022",
+    summary:
+      "Provided senior engineering leadership during a critical contract window with emphasis on architecture and execution quality.",
+    highlights: [
+      "Owned system design and delivery quality across product-critical workflows.",
+      "Set stronger technical standards to support maintainability and team execution.",
+      "Helped stabilize delivery under compressed timelines and evolving requirements."
+    ]
+  },
+  {
+    id: "conscious-patterns-fractional-cto",
+    kind: "major",
+    time: 2022.05,
+    yearLabel: "2022",
+    title: "Conscious Patterns",
+    organization: "Conscious Patterns",
+    role: "Fractional CTO",
+    period: "Jan 2022 - Present",
+    summary:
+      "Leads system architecture and engineering execution for a hardware-software wellness platform.",
+    highlights: [
+      "Designed and shipped a custom Raspberry Pi-based Linux OS and service stack for device operations.",
+      "Built on-device APIs and services coordinating audio processing, vibration control, networking, and remote health monitoring.",
+      "Shipped companion iOS and iPadOS apps in SwiftUI for device control and real-time feedback."
+    ]
+  },
+  {
+    id: "device-os-and-service-stack",
     kind: "minor",
     time: 2023.1,
     yearLabel: "2023",
-    title: "Prototype library",
-    organization: "Independent Practice",
+    title: "Device OS + services",
+    organization: "Conscious Patterns",
     role: "Milestone",
     period: "2023",
-    summary: "Standardized rapid concept prototypes to validate interaction directions.",
-    highlights: [
-      "Improved design review quality with interactive demo artifacts.",
-      "Shortened iteration cycles for high-risk interactions."
-    ]
-  },
-  {
-    id: "portfolio-rebuild",
-    kind: "major",
-    time: 2025.0,
-    yearLabel: "2025",
-    title: "Personal Platform",
-    organization: "michaelflores.co",
-    role: "Builder / Storyteller",
-    period: "2025-Present",
     summary:
-      "Building an intentional portfolio platform focused on process, craft, and outcomes.",
+      "Shipped core embedded runtime and control services that unified hardware, firmware, and connected app experiences.",
     highlights: [
-      "Designing a timeline-first wayfinding model for resume and case studies.",
-      "Combining narrative storytelling with interaction-led exploration.",
-      "Creating a modular content foundation for future writing and product work."
+      "Added robust device communication pathways across local and cloud-connected surfaces.",
+      "Improved operational reliability under real-world hardware constraints."
     ]
   },
   {
-    id: "radial-timeline-concept",
+    id: "airtime-staff-software-engineer-ii",
+    kind: "major",
+    time: 2022.65,
+    yearLabel: "2022",
+    title: "Airtime",
+    organization: "Airtime",
+    role: "Staff Software Engineer II",
+    period: "Aug 2022 - Jun 2025",
+    summary:
+      "Owned end-to-end delivery of high-impact creator features across Airtime Watch and Record products.",
+    highlights: [
+      "Led architecture and implementation for channels, direct upload, metadata pipelines, sharing redesign, and a full video editor rebuild.",
+      "Integrated AI-powered capabilities into established creator workflows while preserving compatibility.",
+      "Acted as technical owner by setting direction, unblocking teams, and raising delivery quality through architecture reviews."
+    ]
+  },
+  {
+    id: "airtime-ai-creator-workflows",
     kind: "minor",
-    time: 2025.6,
+    time: 2024.2,
+    yearLabel: "2024",
+    title: "AI creator workflows",
+    organization: "Airtime",
+    role: "Milestone",
+    period: "2024",
+    summary:
+      "Expanded creator tooling with AI-driven functionality layered into existing production workflows.",
+    highlights: [
+      "Balanced feature expansion with backward compatibility and reliability.",
+      "Improved creator workflow depth without disrupting established usage patterns."
+    ]
+  },
+  {
+    id: "all-turtles-engineering-consultant",
+    kind: "major",
+    time: 2025.55,
     yearLabel: "2025",
-    title: "Radial timeline concept",
-    organization: "michaelflores.co",
+    title: "All Turtles",
+    organization: "All Turtles (Client: Carrot Fertility)",
+    role: "Engineering Consultant",
+    period: "Jul 2025 - Jan 2026",
+    summary:
+      "Owned high-risk mobile platform modernization and core health-data workflows for Carrot Fertility sprint engagements.",
+    highlights: [
+      "Re-architected HealthKit and Health Connect integrations to support new product features with cross-platform parity.",
+      "Led migration of production apps to Expo SDK 54, reducing maintenance drag and unblocking future delivery.",
+      "Produced technical plans for experimentation and A/B testing infrastructure to support data-driven product decisions."
+    ]
+  },
+  {
+    id: "carrot-health-data-rewrite",
+    kind: "minor",
+    time: 2025.85,
+    yearLabel: "2025",
+    title: "Health data rewrite",
+    organization: "All Turtles / Carrot Fertility",
     role: "Milestone",
     period: "2025",
-    summary: "Prototyped radial interaction patterns for resume and work history.",
+    summary:
+      "Reworked critical notification and health-data ingestion systems to improve correctness, resilience, and extensibility.",
     highlights: [
-      "Added overview and zoomed context for major and minor moments.",
-      "Connected timeline points to role-specific impact narratives."
+      "Improved reliability of sensitive healthcare data flows.",
+      "Created a stronger foundation for future mobile feature development."
     ]
   }
 ];
