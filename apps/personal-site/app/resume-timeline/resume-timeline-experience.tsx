@@ -366,6 +366,7 @@ export default function ResumeTimelineExperience({
   const zoomScaleRef = useRef(SCALE_DEFAULT);
   const intersectingAtYRef = useRef(0);
   const lastScrollTopRef = useRef(0);
+  const touchStartYRef = useRef<number | null>(null);
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInitializedFromUrlRef = useRef(!isLandingMode);
@@ -552,6 +553,7 @@ export default function ResumeTimelineExperience({
     setIsSheetOpen(false);
     setHoveredId(null);
     lastScrollTopRef.current = 0;
+    touchStartYRef.current = null;
     intersectingAtYRef.current = 0;
     setTimelineBlur(0);
     syncScale(SCALE_DEFAULT);
@@ -725,6 +727,39 @@ export default function ResumeTimelineExperience({
     }
 
     updateTimelineBlur(Math.max(scrollY, 0));
+  }
+
+  function handleSheetWheel(event: React.WheelEvent<HTMLDivElement>) {
+    if (!isOverlayOpen || !isSheetOpen) {
+      return;
+    }
+
+    if (event.currentTarget.scrollTop <= 0 && event.deltaY < -1) {
+      event.preventDefault();
+      closeOverlay();
+    }
+  }
+
+  function handleSheetTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    touchStartYRef.current = event.touches[0]?.clientY ?? null;
+  }
+
+  function handleSheetTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+    if (!isOverlayOpen || !isSheetOpen) {
+      return;
+    }
+
+    const startY = touchStartYRef.current;
+    const currentY = event.touches[0]?.clientY;
+    if (startY === null || currentY === undefined) {
+      return;
+    }
+
+    const deltaY = currentY - startY;
+    if (event.currentTarget.scrollTop <= 0 && deltaY > 12) {
+      closeOverlay();
+      touchStartYRef.current = currentY;
+    }
   }
 
   const RootElement = (isLandingMode ? "div" : "main") as "div" | "main";
@@ -917,6 +952,9 @@ export default function ResumeTimelineExperience({
               className="resume-overlay__sheet"
               ref={overlaySheetRef}
               onScroll={handleSheetScroll}
+              onWheel={handleSheetWheel}
+              onTouchStart={handleSheetTouchStart}
+              onTouchMove={handleSheetTouchMove}
               aria-live="polite"
             >
               <div className="resume-overlay__grabber" aria-hidden="true" />
