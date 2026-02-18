@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [{ href: "/resume-timeline", label: "Resume timeline" }];
+const navItems = [{ href: "/#timeline", label: "Timeline" }];
 
 export default function SideRailNav() {
   const pathname = usePathname();
@@ -14,8 +14,7 @@ export default function SideRailNav() {
         <span className="site-rail__hint">Menu</span>
         <ul className="site-rail__list">
           {navItems.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = pathname === "/";
 
             return (
               <li key={item.href}>

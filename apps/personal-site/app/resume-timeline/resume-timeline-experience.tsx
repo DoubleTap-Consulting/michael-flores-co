@@ -281,7 +281,17 @@ function formatPointLabel(point: TimelinePoint) {
   return `${point.yearLabel} · ${point.role} · ${point.title}`;
 }
 
-export default function ResumeTimelineExperience() {
+type ResumeTimelineExperienceProps = {
+  mode?: "standalone" | "landing";
+  showIntro?: boolean;
+};
+
+export default function ResumeTimelineExperience({
+  mode = "standalone",
+  showIntro = true
+}: ResumeTimelineExperienceProps) {
+  const isLandingMode = mode === "landing";
+
   const [selectedId, setSelectedId] = useState(majorTimeline[0]?.id ?? "");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
@@ -298,6 +308,7 @@ export default function ResumeTimelineExperience() {
   const lastScrollTopRef = useRef(0);
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasInitializedFromUrlRef = useRef(!isLandingMode);
 
   const selectedIndex = Math.max(
     orderedTimeline.findIndex((point) => point.id === selectedId),
@@ -560,6 +571,61 @@ export default function ResumeTimelineExperience() {
   }, [clearOverlayTimers]);
 
   useEffect(() => {
+    if (!isLandingMode || hasInitializedFromUrlRef.current) {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryPoint = searchParams.get("point");
+    const resolvedPoint =
+      queryPoint && timelineById.has(queryPoint)
+        ? queryPoint
+        : majorTimeline[0]?.id ?? "";
+    const querySheet = searchParams.get("sheet");
+
+    if (querySheet === "open") {
+      openPoint(resolvedPoint);
+    } else {
+      setSelectedId(resolvedPoint);
+      setIsOverlayOpen(false);
+      setIsSheetOpen(false);
+      syncScale(SCALE_DEFAULT);
+    }
+
+    hasInitializedFromUrlRef.current = true;
+  }, [isLandingMode, openPoint, syncScale]);
+
+  useEffect(() => {
+    if (!isLandingMode || !hasInitializedFromUrlRef.current) {
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    const nextSheet = isSheetOpen ? "open" : "closed";
+    let hasChanged = false;
+
+    if (url.searchParams.get("point") !== selectedId) {
+      url.searchParams.set("point", selectedId);
+      hasChanged = true;
+    }
+
+    if (url.searchParams.get("sheet") !== nextSheet) {
+      url.searchParams.set("sheet", nextSheet);
+      hasChanged = true;
+    }
+
+    if (!hasChanged) {
+      return;
+    }
+
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${url.pathname}${url.search}${url.hash}`
+    );
+  }, [isLandingMode, isSheetOpen, selectedId]);
+
+  useEffect(() => {
     if (!isOverlayOpen || !isSheetOpen) {
       return;
     }
@@ -590,19 +656,25 @@ export default function ResumeTimelineExperience() {
     updateTimelineBlur(Math.max(scrollY, 0));
   }
 
+  const RootElement = (isLandingMode ? "div" : "main") as "div" | "main";
+
   return (
-    <main className="resume-page">
-      <header className="resume-page__intro">
-        <p className="resume-page__kicker">resume timeline</p>
-        <h1 className="resume-page__title">Career story, mapped over time</h1>
-        <p className="resume-page__lede">
-          Click any point to zoom in. Scroll inside the sheet to read.
-          Scroll back up at the top to dismiss to the full radial view.
-        </p>
-      </header>
+    <RootElement className={`resume-page ${isLandingMode ? "resume-page--landing" : ""}`}>
+      {showIntro ? (
+        <header className="resume-page__intro">
+          <p className="resume-page__kicker">resume timeline</p>
+          <h1 className="resume-page__title">Career story, mapped over time</h1>
+          <p className="resume-page__lede">
+            Click any point to zoom in. Scroll inside the sheet to read.
+            Scroll back up at the top to dismiss to the full radial view.
+          </p>
+        </header>
+      ) : null}
 
       <section
-        className={`resume-stage ${isOverlayOpen ? "is-zoomed" : ""}`}
+        className={`resume-stage ${isOverlayOpen ? "is-zoomed" : ""} ${
+          isLandingMode ? "resume-stage--landing" : ""
+        }`}
         aria-label="Interactive timeline"
       >
         <div
@@ -835,6 +907,6 @@ export default function ResumeTimelineExperience() {
           </div>
         </div>
       </section>
-    </main>
+    </RootElement>
   );
 }
