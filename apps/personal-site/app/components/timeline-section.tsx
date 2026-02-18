@@ -30,7 +30,7 @@ export default function TimelineSection({ isInteractive }: TimelineSectionProps)
       <ResumeTimelineExperience
         mode="landing"
         showIntro={false}
-        onOverlayStateChange={handleOverlayStateChange}
+        onOverlayStateChangeAction={handleOverlayStateChange}
       />
     </section>
   );

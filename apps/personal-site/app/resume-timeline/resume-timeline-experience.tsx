@@ -221,6 +221,22 @@ const timelinePoints: TimelinePoint[] = [
       "Created a stronger foundation for future HealthKit and push notifications development.",
     ],
   },
+  {
+    id: "carrot-fertility-senior-software-engineer-ii",
+    kind: "major",
+    time: 2026.12,
+    yearLabel: "2026",
+    title: "Carrot Fertility",
+    organization: "Carrot Fertility",
+    role: "Senior Software Engineer II",
+    period: "Feb 2026 - Present",
+    summary:
+      "Transitioned from contractor to full-time engineer and continued leading delivery on the Sprints team.",
+    highlights: [
+      "Converted from prior contract engagement into a full-time role on the same product area.",
+      "Continued ownership of Sprints initiatives across mobile platform reliability and feature delivery.",
+    ],
+  },
 ];
 
 const MIN_GAP = 5;
@@ -271,9 +287,12 @@ const SCALE_DEFAULT = 1;
 const SCALE_ENTRY = 2.25;
 const SHEET_REVEAL_DELAY_MS = 220;
 const ZOOM_OUT_DELAY_MS = 90;
+const OVERVIEW_ARC_GAP = 18;
+const OVERVIEW_ARC_SPAN = 360 - OVERVIEW_ARC_GAP;
+const OVERVIEW_ARC_START = -90 + OVERVIEW_ARC_GAP / 2;
 
 function toOverviewAngle(degree: number): number {
-  return (degree / maxDegree) * 360 - 90;
+  return (degree / maxDegree) * OVERVIEW_ARC_SPAN + OVERVIEW_ARC_START;
 }
 
 function toPoint(angle: number, radius: number) {
@@ -445,8 +464,7 @@ export default function ResumeTimelineExperience({
     () => [
       `In ${selectedPoint.period}, I worked as ${selectedPoint.role} at ${selectedPoint.organization}. ${selectedPoint.summary}`,
       `The work here required balancing product intent with implementation detail, making sure design decisions held up across edge cases and production realities.`,
-      `This moment also shaped the next stage of my work by sharpening how I prioritize outcomes, sequence scope, and document interaction decisions.`,
-      `Across this chapter, the emphasis was on repeatable systems, reliable interaction patterns, and making complex product surfaces easier to navigate.`,
+      `Across this chapter, the emphasis was on implementing complex product surfaces with craft.`,
     ],
     [selectedPoint],
   );
