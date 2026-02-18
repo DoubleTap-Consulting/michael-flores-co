@@ -725,6 +725,18 @@ body {
     display: grid;
     gap: 0.36rem;
     text-align: center;
+    transition:
+        opacity 260ms var(--ease-out),
+        transform 300ms var(--ease-out),
+        filter 300ms var(--ease-out);
+    will-change: opacity, transform, filter;
+}
+
+.landing-timeline.is-zoomed .landing-timeline__header {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translate3d(0, -8px, 0) scale(0.985);
+    pointer-events: none;
 }
 
 .landing-timeline__kicker {
@@ -1329,6 +1341,7 @@ body {
     .site-rail__link,
     .landing-layer--hero,
     .landing-layer--timeline,
+    .landing-timeline__header,
     .landing-scroll-hint__chevron,
     .resume-overview__mark,
     .resume-overview__label,

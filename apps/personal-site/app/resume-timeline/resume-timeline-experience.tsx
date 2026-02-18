@@ -322,11 +322,13 @@ function formatPointLabel(point: TimelinePoint) {
 type ResumeTimelineExperienceProps = {
   mode?: "standalone" | "landing";
   showIntro?: boolean;
+  onOverlayStateChange?: (isOpen: boolean) => void;
 };
 
 export default function ResumeTimelineExperience({
   mode = "standalone",
-  showIntro = true
+  showIntro = true,
+  onOverlayStateChange
 }: ResumeTimelineExperienceProps) {
   const isLandingMode = mode === "landing";
 
@@ -672,6 +674,10 @@ export default function ResumeTimelineExperience({
     const currentScrollY = overlaySheetRef.current?.scrollTop ?? 0;
     updateTimelineBlur(currentScrollY);
   }, [isOverlayOpen, isSheetOpen, selectedId, updateTimelineBlur]);
+
+  useEffect(() => {
+    onOverlayStateChange?.(isOverlayOpen);
+  }, [isOverlayOpen, onOverlayStateChange]);
 
   function handleSheetScroll(event: React.UIEvent<HTMLDivElement>) {
     if (!isOverlayOpen) {

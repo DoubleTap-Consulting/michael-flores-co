@@ -1,3 +1,6 @@
+"use client";
+
+import { useCallback, useState } from "react";
 import ResumeTimelineExperience from "../resume-timeline/resume-timeline-experience";
 
 type TimelineSectionProps = {
@@ -5,9 +8,16 @@ type TimelineSectionProps = {
 };
 
 export default function TimelineSection({ isInteractive }: TimelineSectionProps) {
+  const [isZoomed, setIsZoomed] = useState(false);
+  const handleOverlayStateChange = useCallback((isOpen: boolean) => {
+    setIsZoomed(isOpen);
+  }, []);
+
   return (
     <section
-      className={`landing-timeline ${isInteractive ? "is-interactive" : ""}`}
+      className={`landing-timeline ${isInteractive ? "is-interactive" : ""} ${
+        isZoomed ? "is-zoomed" : ""
+      }`}
       aria-labelledby="timeline-heading"
     >
       <header className="landing-timeline__header">
@@ -17,7 +27,11 @@ export default function TimelineSection({ isInteractive }: TimelineSectionProps)
         </h2>
       </header>
 
-      <ResumeTimelineExperience mode="landing" showIntro={false} />
+      <ResumeTimelineExperience
+        mode="landing"
+        showIntro={false}
+        onOverlayStateChange={handleOverlayStateChange}
+      />
     </section>
   );
 }
