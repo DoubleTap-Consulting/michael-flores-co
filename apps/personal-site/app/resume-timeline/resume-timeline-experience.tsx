@@ -490,7 +490,7 @@ export default function ResumeTimelineExperience({
 
   const radialFrameStyle = {
     transform: `translate3d(${currentPanX.toFixed(2)}px, ${currentPanY.toFixed(2)}px, 0) scale(${currentScale})`,
-    filter: `blur(${timelineBlur.toFixed(2)}px)`,
+    filter: `var(--timeline-overview-filter, blur(0px)) blur(${timelineBlur.toFixed(2)}px)`,
   };
 
   const syncScale = useCallback((nextScale: number) => {

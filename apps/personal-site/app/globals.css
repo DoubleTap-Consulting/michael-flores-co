@@ -615,6 +615,7 @@ body {
     --timeline-scale: 0.76;
     --timeline-opacity: 0.08;
     --timeline-z: -260px;
+    --timeline-overview-filter: blur(10px);
     --scene-blur: 0px;
 }
 
@@ -1341,6 +1342,7 @@ body {
     .site-rail__link,
     .landing-layer--hero,
     .landing-layer--timeline,
+    .landing-timeline,
     .landing-timeline__header,
     .landing-scroll-hint__chevron,
     .resume-overview__mark,

@@ -109,6 +109,12 @@ export default function LandingNarrative() {
       const timelineZ = lerp(-260, 0, stepA * 0.2 + stepB * 0.6 + stepC * 0.2);
       const heroBlurProgress = clamp((progress - 0.18) / 0.62, 0, 1);
       const heroBlur = lerp(0, 10, heroBlurProgress * heroBlurProgress);
+      const timelineFocusProgress = clamp((progress - 0.08) / 0.54, 0, 1);
+      const timelineOverviewBlur = lerp(
+        10,
+        0,
+        timelineFocusProgress * timelineFocusProgress
+      );
       const backgroundProgress = clamp(
         (progress - BACKGROUND_TRANSITION_START) /
           (BACKGROUND_TRANSITION_END - BACKGROUND_TRANSITION_START),
@@ -124,6 +130,7 @@ export default function LandingNarrative() {
         "--timeline-scale": timelineScale.toFixed(4),
         "--timeline-opacity": timelineOpacity.toFixed(4),
         "--timeline-z": `${timelineZ.toFixed(2)}px`,
+        "--timeline-overview-filter": `blur(${timelineOverviewBlur.toFixed(2)}px)`,
         "--scene-blur": `${heroBlur.toFixed(2)}px`
       });
       setBackgroundProgress(backgroundProgress);
@@ -191,6 +198,7 @@ export default function LandingNarrative() {
         "--timeline-scale": "1",
         "--timeline-opacity": "1",
         "--timeline-z": "0px",
+        "--timeline-overview-filter": "blur(0px)",
         "--scene-blur": "0px"
       });
 
