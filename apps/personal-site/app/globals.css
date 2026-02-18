@@ -631,12 +631,13 @@ body {
     width: min(54rem, 100%);
     margin: 0 auto;
     aspect-ratio: 1;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .resume-overview__frame {
     position: absolute;
     inset: 0;
+    overflow: hidden;
     transform-origin: 50% 50%;
     will-change: transform;
     transition:
@@ -736,6 +737,13 @@ body {
         transform 220ms var(--ease-out);
 }
 
+.resume-overview__label--minor {
+    font-family: var(--body-font);
+    font-style: normal;
+    font-size: clamp(0.7rem, 1vw, 0.9rem);
+    line-height: 1.2;
+}
+
 .resume-overview__label::after {
     content: "";
     position: absolute;
@@ -753,6 +761,13 @@ body {
     font-size: 0.83em;
 }
 
+.resume-overview__label--minor > span:last-child {
+    font-family: var(--mono-font);
+    font-size: 0.78em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
 .resume-overview__label.is-left {
     text-align: right;
 }
@@ -767,6 +782,7 @@ body {
 
 .resume-overview__label.is-active {
     color: #d8611a;
+    z-index: 2;
 }
 
 .resume-overview__label.is-hidden {

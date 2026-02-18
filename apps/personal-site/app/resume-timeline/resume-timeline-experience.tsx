@@ -228,11 +228,8 @@ const OVERVIEW_MAJOR_OUTER = 326;
 const OVERVIEW_MINOR_OUTER = 300;
 const OVERVIEW_LABEL_RADIUS = 376;
 const OVERLAY_TARGET_Y_RATIO = -0.34;
-const SCROLL_SNAP = 250;
-const SCALE_ZOOM = 6;
 const SCALE_DEFAULT = 1;
 const SCALE_ENTRY = 2.25;
-const SCALE_SCROLL_STEP = 0.02;
 const SHEET_REVEAL_DELAY_MS = 220;
 const ZOOM_OUT_DELAY_MS = 90;
 
@@ -254,6 +251,11 @@ function toPercent(xOrY: number) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
+}
+
+function circularAngleDistance(firstAngle: number, secondAngle: number) {
+  const diff = Math.abs(firstAngle - secondAngle) % 360;
+  return diff > 180 ? 360 - diff : diff;
 }
 
 function areIntersecting(
@@ -320,6 +322,68 @@ export default function ResumeTimelineExperience() {
     const end = Math.min(selectedIndex + 3, orderedTimeline.length);
     return orderedTimeline.slice(start, end).filter((point) => point.id !== selectedId);
   }, [selectedId, selectedIndex]);
+
+  const visibleLabelIds = useMemo(() => {
+    if (!isOverlayOpen) {
+      return new Set(majorTimeline.map((point) => point.id));
+    }
+
+    const overlayCandidates = orderedTimeline.filter((point) => {
+      if (point.id === selectedId) {
+        return true;
+      }
+
+      const pointIndex = timelineIndexById.get(point.id) ?? 0;
+      const distanceFromSelected = Math.abs(pointIndex - selectedIndex);
+
+      if (point.kind === "major") {
+        return distanceFromSelected <= 2;
+      }
+
+      return distanceFromSelected <= 1;
+    });
+
+    const prioritizedCandidates = [...overlayCandidates].sort((first, second) => {
+      if (first.id === selectedId) {
+        return -1;
+      }
+      if (second.id === selectedId) {
+        return 1;
+      }
+      if (first.kind !== second.kind) {
+        return first.kind === "major" ? -1 : 1;
+      }
+
+      const firstIndex = timelineIndexById.get(first.id) ?? 0;
+      const secondIndex = timelineIndexById.get(second.id) ?? 0;
+      const firstDistance = Math.abs(firstIndex - selectedIndex);
+      const secondDistance = Math.abs(secondIndex - selectedIndex);
+      return firstDistance - secondDistance;
+    });
+
+    const keptCandidates: PositionedTimelinePoint[] = [];
+
+    for (const candidate of prioritizedCandidates) {
+      const candidateAngle = toOverviewAngle(candidate.degree);
+      const isTooClose = keptCandidates.some((keptCandidate) => {
+        const keptAngle = toOverviewAngle(keptCandidate.degree);
+        const minAngleGap =
+          candidate.id === selectedId || keptCandidate.id === selectedId
+            ? 16
+            : candidate.kind === "minor" || keptCandidate.kind === "minor"
+              ? 11
+              : 8;
+
+        return circularAngleDistance(candidateAngle, keptAngle) < minAngleGap;
+      });
+
+      if (candidate.id === selectedId || !isTooClose) {
+        keptCandidates.push(candidate);
+      }
+    }
+
+    return new Set(keptCandidates.map((point) => point.id));
+  }, [isOverlayOpen, selectedId, selectedIndex]);
 
   const longformSections = useMemo(
     () => [
@@ -515,25 +579,15 @@ export default function ResumeTimelineExperience() {
     const deltaY = scrollY - previousScrollY;
     lastScrollTopRef.current = scrollY;
 
-    if (scrollY <= 0) {
-      syncScale(SCALE_DEFAULT);
-      if (deltaY < 0) {
-        closeOverlay();
-      }
-      updateTimelineBlur(scrollY);
+    // Keep the radial focus stable while reading sheet content.
+    syncScale(SCALE_ENTRY);
+
+    if (scrollY <= 0 && deltaY < 0) {
+      closeOverlay();
       return;
     }
 
-    if (scrollY >= SCROLL_SNAP) {
-      syncScale(SCALE_ZOOM);
-      updateTimelineBlur(scrollY);
-      return;
-    }
-
-    let newScale = zoomScaleRef.current + deltaY * SCALE_SCROLL_STEP;
-    newScale = clamp(newScale, SCALE_DEFAULT, SCALE_ZOOM);
-    syncScale(newScale);
-    updateTimelineBlur(scrollY);
+    updateTimelineBlur(Math.max(scrollY, 0));
   }
 
   return (
@@ -542,8 +596,8 @@ export default function ResumeTimelineExperience() {
         <p className="resume-page__kicker">resume timeline</p>
         <h1 className="resume-page__title">Career story, mapped over time</h1>
         <p className="resume-page__lede">
-          Click any point to zoom in. Scroll inside the sheet to read and drive
-          deeper zoom. Scroll back up to the top to dismiss to the full radial view.
+          Click any point to zoom in. Scroll inside the sheet to read.
+          Scroll back up at the top to dismiss to the full radial view.
         </p>
       </header>
 
@@ -654,8 +708,7 @@ export default function ResumeTimelineExperience() {
                 );
               })}
 
-              {majorTimeline.map((point) => {
-                const pointIndex = timelineIndexById.get(point.id) ?? 0;
+              {orderedTimeline.map((point) => {
                 const angle = toOverviewAngle(point.degree);
                 const labelPoint = toPoint(angle, OVERVIEW_LABEL_RADIUS);
                 const alignment =
@@ -666,24 +719,25 @@ export default function ResumeTimelineExperience() {
                       : "is-center";
                 const isSelected = selectedId === point.id;
                 const isHovered = hoveredId === point.id;
-                const isContextPoint = Math.abs(pointIndex - selectedIndex) <= 2;
-                const shouldShow = !isOverlayOpen || isSelected || isContextPoint;
+                const shouldShow = visibleLabelIds.has(point.id);
 
                 return (
                   <button
                     key={`overview-label-${point.id}`}
                     type="button"
-                    className={`resume-overview__label ${alignment} ${
+                    className={`resume-overview__label resume-overview__label--${point.kind} ${alignment} ${
                       isSelected || isHovered ? "is-active" : ""
                     } ${shouldShow ? "" : "is-hidden"}`}
                     style={{
                       left: `${toPercent(labelPoint.x)}%`,
                       top: `${toPercent(labelPoint.y)}%`
                     }}
+                    tabIndex={shouldShow ? 0 : -1}
                     onMouseEnter={() => setHoveredId(point.id)}
                     onFocus={() => setHoveredId(point.id)}
                     onBlur={() => setHoveredId(null)}
                     onClick={() => openPoint(point.id)}
+                    aria-hidden={!shouldShow}
                   >
                     <span>{point.title}</span>
                     <span>{point.yearLabel}</span>
